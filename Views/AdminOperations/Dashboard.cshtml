@@ -1,0 +1,83 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Admin Panel";
+}
+
+<div class="mb-4">
+    <h1 class="fw-bold mb-2">Admin Panel</h1>
+    <p class="text-muted mb-0">Use these shortcuts to manage the store from one place.</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="card-title mb-0">Orders</h5>
+                    <i class="bi bi-receipt-cutoff fs-3 text-primary"></i>
+                </div>
+                <p class="text-muted">View all customer orders and update their status.</p>
+                <a href="/AdminOperations/AllOrders" class="btn btn-primary">Open Orders</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="card-title mb-0">Books</h5>
+                    <i class="bi bi-book fs-3 text-success"></i>
+                </div>
+                <p class="text-muted">Add, edit, delete, and maintain the book catalog.</p>
+                <a href="/Book/Index" class="btn btn-success">Manage Books</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="card-title mb-0">Genres</h5>
+                    <i class="bi bi-collection fs-3 text-warning"></i>
+                </div>
+                <p class="text-muted">Maintain genre lists and add new categories.</p>
+                <a href="/Genre/Index" class="btn btn-warning text-dark">Manage Genres</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="card-title mb-0">Stock</h5>
+                    <i class="bi bi-box-seam fs-3 text-danger"></i>
+                </div>
+                <p class="text-muted">Check inventory levels and update low stock items.</p>
+                <a href="/Stock/Index" class="btn btn-danger">Manage Stock</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Analytics</h5>
+                <p class="text-muted">Use the analytics dashboard to review sales, customers, recent orders, and low stock summaries.</p>
+                <a href="/Analytics/Dashboard" class="btn btn-outline-primary">Open Analytics</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Reports</h5>
+                <p class="text-muted">Review top-selling books and track store performance by date range.</p>
+                <a href="/Reports/TopFiveSellingBooks" class="btn btn-outline-dark">Open Reports</a>
+            </div>
+        </div>
+    </div>
+</div>

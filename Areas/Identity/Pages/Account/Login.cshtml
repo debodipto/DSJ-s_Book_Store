@@ -1,0 +1,107 @@
+@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+
+.login-card {
+    width: 400px;
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.login-title {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-control {
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.btn-login {
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.small-link {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+body.dark-mode .login-card {
+    background: #1e293b;
+    color: white;
+}
+
+</style>
+
+<div class="login-wrapper">
+
+    <div class="login-card">
+
+        <div class="login-title">
+            📚 Login to Your Account
+        </div>
+
+        <form method="post">
+
+            <div class="mb-3">
+                <label>Email</label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label>Password</label>
+                <input asp-for="Input.Password" type="password" class="form-control" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="Input.RememberMe" class="form-check-input" />
+                <label class="form-check-label">Remember me</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-login">
+                Login
+            </button>
+
+        </form>
+
+        <div class="small-link">
+            <a asp-page="./ForgotPassword">Forgot password?</a>
+        </div>
+
+        <div class="small-link">
+            <a asp-page="./Register">Create new account</a>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

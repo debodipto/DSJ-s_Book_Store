@@ -1,0 +1,111 @@
+@{
+    int bookCount = Model.Books?.Count ?? 0;
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-gradient-warning text-dark text-center py-4">
+            <i class="bi bi-person-lines-fill fs-1 mb-2"></i>
+            <h3 class="mb-0">Books by @ViewBag.Author</h3>
+            <p class="mb-0">Explore all works from this talented author</p>
+        </div>
+        <div class="card-body p-4">
+            <!-- Author Bio Section -->
+            <div class="row mb-5">
+                <div class="col-md-4 text-center">
+                    <div class="author-avatar mb-3">
+                        <i class="bi bi-person-circle text-warning fs-1"></i>
+                    </div>
+                    <h4>@ViewBag.Author</h4>
+                    <p class="text-muted">Award-winning author</p>
+                </div>
+                <div class="col-md-8">
+                    <h5>About the Author</h5>
+                    <p class="lead">@ViewBag.Author is a renowned author known for captivating storytelling and deep insights into human nature. Their works have inspired millions of readers worldwide.</p>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="stat">
+                                <h3 class="text-warning">@bookCount</h3>
+                                <p>Books Published</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat">
+                                <h3 class="text-warning">4.8</h3>
+                                <p>Average Rating</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat">
+                                <h3 class="text-warning">2M+</h3>
+                                <p>Readers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.Books.Any())
+            {
+                <h4 class="mb-4"><i class="bi bi-bookshelf"></i> All Books by @ViewBag.Author</h4>
+                <div class="row">
+                    @foreach (var book in Model.Books)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm hover-card">
+                                <img src="~/images/@book.Image" class="card-img-top" alt="@book.BookName" style="height: 200px; object-fit: cover;" />
+                                <div class="card-body">
+                                    <h5 class="card-title">@book.BookName</h5>
+                                    <p class="card-text fw-bold text-warning">$@book.Price</p>
+                                    <div class="d-flex gap-2">
+                                        <a href="/Book/Details/@book.Id" class="btn btn-outline-warning flex-fill">
+                                            <i class="bi bi-eye"></i> View Details
+                                        </a>
+                                        <button class="btn btn-warning">
+                                            <i class="bi bi-cart-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-book-x text-muted fs-1 mb-3"></i>
+                    <h4 class="text-muted">No books found</h4>
+                    <p class="text-muted">We couldn't find any books by this author in our collection.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-warning {
+        background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+    }
+    .author-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #fdcb6e, #e17055);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+    .stat h3 {
+        font-size: 2rem;
+        margin-bottom: 0;
+    }
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+</style>

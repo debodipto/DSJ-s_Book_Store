@@ -1,0 +1,46 @@
+@model IEnumerable<DSJsBookStore.Models.DTOs.TopNSoldBookModels>
+
+<h3>Top selling books</h3>
+
+<!-- ✅ FIX: DATE SHOW -->
+<h4>
+    Showing Results from @ViewBag.StartDate.ToString("dd-MMM-yyyy")
+    to @ViewBag.EndDate.ToString("dd-MMM-yyyy")
+</h4>
+
+<form class="my-2 d-flex" style="gap:5px" asp-action="TopFiveSellingBooks" method="get">
+    <input type="date" style="width: 200px;" class="form-control" name="sDate" />
+    <input type="date" style="width: 200px;" class="form-control" name="eDate" />
+    <button class="btn btn-primary">Filter</button>
+    <a class="btn btn-primary" href="/Reports/TopFiveSellingBooks">Clear</a>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <table style="width: 50%;" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Sold Units</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.BookName</td>
+                <td>@item.TotalQuantity</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="my-3" style="font-size:16px; font-weight:bold">
+        No records found
+    </div>
+}
+
+

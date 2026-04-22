@@ -1,0 +1,364 @@
+@page
+@using Microsoft.AspNetCore.Http.Features
+@model TwoFactorAuthenticationModel
+@{
+    ViewData["Title"] = "🔐 Two-Factor Authentication";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .auth-container {
+        max-width: 900px;
+        margin: auto;
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+
+    .header-section {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .header-section h3 {
+        color: #2d3748;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .header-section p {
+        color: #718096;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .status-card {
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .status-enabled {
+        background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+        border-left: 4px solid #38a169;
+    }
+
+    .status-disabled {
+        background: linear-gradient(135deg, #fff5f5, #fed7d7);
+        border-left: 4px solid #e53e3e;
+    }
+
+    .status-warning {
+        background: linear-gradient(135deg, #fffaf0, #feebc8);
+        border-left: 4px solid #dd6b20;
+    }
+
+    .status-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .status-enabled .status-icon {
+        background: #38a169;
+        color: white;
+    }
+
+    .status-disabled .status-icon {
+        background: #e53e3e;
+        color: white;
+    }
+
+    .status-warning .status-icon {
+        background: #dd6b20;
+        color: white;
+    }
+
+    .status-card h5 {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .status-card p {
+        color: #4a5568;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+
+    .btn-outline-primary {
+        border: 2px solid #667eea;
+        color: #667eea;
+        background: transparent;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .btn-outline-primary:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .feature-card {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        margin: 0 auto 15px;
+    }
+
+    .feature-card h6 {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .feature-card p {
+        color: #718096;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 20px;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #fed7d7, #feb2b2);
+        color: #742a2a;
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #feebc8, #fbd38d);
+        color: #744210;
+    }
+
+    @@media(max-width:768px){
+        .auth-container {
+            padding: 25px;
+            margin: 20px;
+        }
+
+        .header-section h3 {
+            font-size: 1.5rem;
+        }
+
+        .feature-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-primary, .btn-outline-primary {
+            width: 100%;
+            margin-right: 0;
+        }
+    }
+</style>
+
+<div class="auth-container">
+    <div class="header-section">
+        <h3><i class="bi bi-shield-lock me-2"></i>@ViewData["Title"]</h3>
+        <p>Add an extra layer of security to your account</p>
+    </div>
+
+    <partial name="_StatusMessage" for="StatusMessage" />
+
+    @{
+        var consentFeature = HttpContext.Features.Get<ITrackingConsentFeature>();
+        @if (consentFeature?.CanTrack ?? true)
+        {
+            @if (Model.Is2faEnabled)
+            {
+                <!-- 2FA Enabled Status -->
+                <div class="status-card status-enabled">
+                    <div class="status-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h5>Two-Factor Authentication is Enabled</h5>
+                    <p>Your account is protected with an additional layer of security. You'll need to provide a code from your authenticator app when signing in.</p>
+                </div>
+
+                <!-- Recovery Codes Warnings -->
+                @if (Model.RecoveryCodesLeft == 0)
+                {
+                    <div class="alert alert-danger">
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i>No Recovery Codes Left</h6>
+                        <p>You must <a asp-page="./GenerateRecoveryCodes" class="alert-link">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
+                    </div>
+                }
+                else if (Model.RecoveryCodesLeft == 1)
+                {
+                    <div class="alert alert-danger">
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i>1 Recovery Code Left</h6>
+                        <p>You can <a asp-page="./GenerateRecoveryCodes" class="alert-link">generate a new set of recovery codes</a>.</p>
+                    </div>
+                }
+                else if (Model.RecoveryCodesLeft <= 3)
+                {
+                    <div class="alert alert-warning">
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i>@Model.RecoveryCodesLeft Recovery Codes Left</h6>
+                        <p>You should <a asp-page="./GenerateRecoveryCodes" class="alert-link">generate a new set of recovery codes</a>.</p>
+                    </div>
+                }
+
+                <!-- Action Buttons -->
+                <div class="mb-4">
+                    @if (Model.IsMachineRemembered)
+                    {
+                        <form method="post" style="display: inline-block">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="bi bi-device-ssd me-1"></i>Forget this browser
+                            </button>
+                        </form>
+                    }
+                    <a asp-page="./Disable2fa" class="btn btn-outline-primary">
+                        <i class="bi bi-shield-x me-1"></i>Disable 2FA
+                    </a>
+                    <a asp-page="./GenerateRecoveryCodes" class="btn btn-primary">
+                        <i class="bi bi-arrow-repeat me-1"></i>Reset recovery codes
+                    </a>
+                </div>
+            }
+            else
+            {
+                <!-- 2FA Disabled Status -->
+                <div class="status-card status-disabled">
+                    <div class="status-icon">
+                        <i class="bi bi-shield-x"></i>
+                    </div>
+                    <h5>Two-Factor Authentication is Disabled</h5>
+                    <p>Your account is currently protected only by your password. Enable 2FA to add an extra layer of security.</p>
+                </div>
+            }
+
+            <!-- Authenticator App Section -->
+            <h4 class="mb-3">
+                <i class="bi bi-phone me-2"></i>Authenticator App
+            </h4>
+            <div class="mb-4">
+                @if (!Model.HasAuthenticator)
+                {
+                    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i>Add authenticator app
+                    </a>
+                }
+                else
+                {
+                    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-outline-primary">
+                        <i class="bi bi-gear me-1"></i>Set up authenticator app
+                    </a>
+                    <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-repeat me-1"></i>Reset authenticator app
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger">
+                <h6><i class="bi bi-exclamation-triangle me-2"></i>Privacy Policy Required</h6>
+                <p>You must accept the privacy and cookie policy before you can enable two-factor authentication.</p>
+            </div>
+        }
+    }
+
+    <!-- Features Grid -->
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <h6>Enhanced Security</h6>
+            <p>Protect your account with an additional verification step beyond just your password.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="bi bi-key"></i>
+            </div>
+            <h6>Time-Based Codes</h6>
+            <p>Use authenticator apps like Google Authenticator or Microsoft Authenticator for secure codes.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="bi bi-arrow-repeat"></i>
+            </div>
+            <h6>Recovery Options</h6>
+            <p>Generate backup recovery codes in case you lose access to your authenticator app.</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+

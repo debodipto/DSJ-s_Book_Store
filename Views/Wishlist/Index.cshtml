@@ -1,0 +1,90 @@
+@model IEnumerable<DSJsBookStore.Models.Wishlist>
+@{
+    ViewData["Title"] = "My Wishlist ❤️";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">❤️ My Wishlist</h1>
+
+            @if (!Model.Any())
+            {
+                <div class="text-center mt-5">
+                    <h3>Your wishlist is empty</h3>
+                    <p>Start adding books you love! 📚</p>
+                    <a href="/Home/Index" class="btn btn-primary">Browse Books</a>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-4 col-sm-6 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body d-flex flex-column">
+                                    @if (!string.IsNullOrEmpty(item.Book?.Image))
+                                    {
+                                        <img src="/images/@item.Book.Image" class="card-img-top" alt="@item.Book.BookName" style="height: 200px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center p-3 bg-light" style="height: 200px;">
+                                            <i class="bi bi-book" style="font-size: 4rem; color: #6c757d;"></i>
+                                        </div>
+                                    }
+
+                                    <h5 class="card-title mt-2">@item.Book?.BookName</h5>
+                                    <p class="card-text text-muted">By @item.Book?.AuthorName</p>
+                                    <p class="card-text"><strong>Genre:</strong> @item.Book?.Genre?.GenreName</p>
+                                    <p class="card-text"><strong>Price:</strong> $@item.Book?.Price.ToString("F2")</p>
+
+                                    <div class="mt-auto">
+                                        <button class="btn btn-danger btn-sm me-2" onclick="removeFromWishlist(@item.BookId)">
+                                            <i class="bi bi-trash"></i> Remove
+                                        </button>
+                                        <a href="/Cart/AddItem?bookId=@item.BookId" class="btn btn-success btn-sm">
+                                            <i class="bi bi-cart-plus"></i> Add to Cart
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function removeFromWishlist(bookId) {
+            if (confirm('Remove this book from your wishlist?')) {
+                try {
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                    const response = await fetch('/Wishlist/RemoveFromWishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': token
+                        },
+                        body: `bookId=${bookId}&__RequestVerificationToken=${token}`
+                    });
+
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Failed to remove from wishlist');
+                    }
+                } catch (error) {
+                    alert('Error occurred');
+                }
+            }
+        }
+    </script>
+}

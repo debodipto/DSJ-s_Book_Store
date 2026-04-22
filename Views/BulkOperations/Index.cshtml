@@ -1,0 +1,574 @@
+@{
+    ViewData["Title"] = "Bulk Operations";
+    Layout = "_AdminLayout";
+}
+
+<style>
+    .bulk-ops-container {
+        padding: 20px;
+        background: #f8fafc;
+        min-height: 100vh;
+    }
+
+    .operation-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .operation-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+        padding: 10px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-bulk {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-bulk:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+
+    .btn-danger-bulk {
+        background: linear-gradient(135deg, #f56565, #c53030);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-danger-bulk:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(245, 101, 101, 0.3);
+        color: white;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .table-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 20px;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table th {
+        background: #f8fafc;
+        border-bottom: 2px solid #e2e8f0;
+        font-weight: 600;
+        color: #2d3748;
+        padding: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .table td {
+        padding: 12px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .checkbox-column {
+        width: 50px;
+    }
+
+    .select-all {
+        margin-bottom: 15px;
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+        margin-bottom: 20px;
+    }
+
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .status-pending {
+        background: #fef5e7;
+        color: #d69e2e;
+    }
+
+    .status-processing {
+        background: #ebf8ff;
+        color: #3182ce;
+    }
+
+    .status-completed {
+        background: #f0fff4;
+        color: #38a169;
+    }
+
+    .status-cancelled {
+        background: #fed7d7;
+        color: #c53030;
+    }
+
+    .operation-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .tab-btn {
+        padding: 10px 20px;
+        border: none;
+        background: none;
+        border-bottom: 3px solid transparent;
+        font-weight: 500;
+        color: #718096;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .tab-btn.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+</style>
+
+<div class="bulk-ops-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-tools me-2"></i>Bulk Operations</h2>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]
+        </div>
+    }
+
+    <!-- Operation Tabs -->
+    <div class="operation-tabs">
+        <button class="tab-btn active" onclick="showTab('books')">Books Operations</button>
+        <button class="tab-btn" onclick="showTab('orders')">Orders Operations</button>
+    </div>
+
+    <!-- Books Operations Tab -->
+    <div id="books-tab" class="tab-content active">
+        <!-- Stock Update Operation -->
+        <div class="operation-card">
+            <div class="operation-title">
+                <i class="bi bi-box-seam"></i>
+                Bulk Stock Update
+            </div>
+
+            <form method="post" asp-action="BulkUpdateStock" id="stock-form">
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Operation Type</label>
+                            <select name="operation" class="form-control" required>
+                                <option value="add">Add to Current Stock</option>
+                                <option value="set">Set Stock To</option>
+                                <option value="subtract">Subtract from Current Stock</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Stock Value</label>
+                            <input type="number" name="stockChange" class="form-control" min="0" required />
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-bulk">
+                    <i class="bi bi-check-circle me-2"></i>Update Stock
+                </button>
+            </form>
+        </div>
+
+        <!-- Price Update Operation -->
+        <div class="operation-card">
+            <div class="operation-title">
+                <i class="bi bi-cash"></i>
+                Bulk Price Update
+            </div>
+
+            <form method="post" asp-action="BulkUpdatePrice" id="price-form">
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Operation Type</label>
+                            <select name="operation" class="form-control" required>
+                                <option value="add">Add to Current Price</option>
+                                <option value="set">Set Price To</option>
+                                <option value="multiply">Multiply Price by</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Price Value</label>
+                            <input type="number" name="priceChange" class="form-control" min="0" step="0.01" required />
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-bulk">
+                    <i class="bi bi-check-circle me-2"></i>Update Prices
+                </button>
+            </form>
+        </div>
+
+        <!-- Delete Books Operation -->
+        <div class="operation-card">
+            <div class="operation-title">
+                <i class="bi bi-trash"></i>
+                Bulk Delete Books
+            </div>
+
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>Warning:</strong> This action cannot be undone. Deleted books and their stock records will be permanently removed.
+            </div>
+
+            <form method="post" asp-action="BulkDeleteBooks" id="delete-form">
+                @Html.AntiForgeryToken()
+
+                <button type="submit" class="btn btn-danger-bulk">
+                    <i class="bi bi-trash me-2"></i>Delete Selected Books
+                </button>
+            </form>
+        </div>
+
+        <!-- Books Table -->
+        <div class="table-container">
+            <div class="table-title">Select Books for Operations</div>
+
+            <div class="select-all">
+                <label>
+                    <input type="checkbox" id="select-all-books" />
+                    <strong>Select All Books</strong>
+                </label>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table" id="books-table">
+                    <thead>
+                        <tr>
+                            <th class="checkbox-column">
+                                <input type="checkbox" id="select-all-books-header" />
+                            </th>
+                            <th>Book Title</th>
+                            <th>Author</th>
+                            <th>Genre</th>
+                            <th>Current Price</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Books will be loaded via AJAX -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Operations Tab -->
+    <div id="orders-tab" class="tab-content">
+        <!-- Order Status Update Operation -->
+        <div class="operation-card">
+            <div class="operation-title">
+                <i class="bi bi-receipt"></i>
+                Bulk Order Status Update
+            </div>
+
+            <form method="post" asp-action="BulkUpdateOrderStatus" id="order-status-form">
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label class="form-label">New Status</label>
+                    <select name="newStatus" class="form-control" required>
+                        <option value="0">Pending</option>
+                        <option value="1">Processing</option>
+                        <option value="2">Completed</option>
+                        <option value="3">Cancelled</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-bulk">
+                    <i class="bi bi-check-circle me-2"></i>Update Order Status
+                </button>
+            </form>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="table-container">
+            <div class="table-title">Select Orders for Operations</div>
+
+            <div class="select-all">
+                <label>
+                    <input type="checkbox" id="select-all-orders" />
+                    <strong>Select All Orders</strong>
+                </label>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table" id="orders-table">
+                    <thead>
+                        <tr>
+                            <th class="checkbox-column">
+                                <input type="checkbox" id="select-all-orders-header" />
+                            </th>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Orders will be loaded via AJAX -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+
+            // Load data for the tab
+            if (tabName === 'books') {
+                loadBooksData();
+            } else if (tabName === 'orders') {
+                loadOrdersData();
+            }
+        }
+
+        // Load books data
+        function loadBooksData() {
+            fetch('/BulkOperations/GetBooksData')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.querySelector('#books-table tbody');
+                    tbody.innerHTML = '';
+
+                    data.forEach(book => {
+                        const row = `
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="bookIds" value="${book.id}" class="book-checkbox" />
+                                </td>
+                                <td>${book.bookName}</td>
+                                <td>${book.authorName}</td>
+                                <td>${book.genreName}</td>
+                                <td>$${book.price.toFixed(2)}</td>
+                                <td>${book.stockQuantity}</td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
+                    });
+                });
+        }
+
+        // Load orders data
+        function loadOrdersData() {
+            fetch('/BulkOperations/GetOrdersData')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.querySelector('#orders-table tbody');
+                    tbody.innerHTML = '';
+
+                    data.forEach(order => {
+                        const statusClass = getStatusClass(order.orderStatus);
+                        const row = `
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="orderIds" value="${order.id}" class="order-checkbox" />
+                                </td>
+                                <td>#${order.id}</td>
+                                <td>${order.customerName}</td>
+                                <td>${order.itemCount}</td>
+                                <td>$${order.totalAmount.toFixed(2)}</td>
+                                <td>
+                                    <span class="status-badge ${statusClass}">
+                                        ${getStatusText(order.orderStatus)}
+                                    </span>
+                                </td>
+                                <td>${new Date(order.createDate).toLocaleDateString()}</td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
+                    });
+                });
+        }
+
+        function getStatusClass(status) {
+            switch (status) {
+                case 0: return 'status-pending';
+                case 1: return 'status-processing';
+                case 2: return 'status-completed';
+                case 3: return 'status-cancelled';
+                default: return '';
+            }
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 0: return 'Pending';
+                case 1: return 'Processing';
+                case 2: return 'Completed';
+                case 3: return 'Cancelled';
+                default: return '';
+            }
+        }
+
+        // Select all functionality for books
+        document.getElementById('select-all-books').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.book-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        document.getElementById('select-all-books-header').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.book-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            document.getElementById('select-all-books').checked = this.checked;
+        });
+
+        // Form submission handlers
+        document.getElementById('stock-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitBulkOperation('stock-form', 'bookIds', '.book-checkbox');
+        });
+
+        document.getElementById('price-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitBulkOperation('price-form', 'bookIds', '.book-checkbox');
+        });
+
+        document.getElementById('delete-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitBulkOperation('delete-form', 'bookIds', '.book-checkbox');
+        });
+
+        document.getElementById('order-status-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitBulkOperation('order-status-form', 'orderIds', '.order-checkbox');
+        });
+
+        function submitBulkOperation(formId, paramName, checkboxSelector) {
+            const form = document.getElementById(formId);
+            const selectedIds = Array.from(document.querySelectorAll(checkboxSelector + ':checked'))
+                .map(cb => parseInt(cb.value));
+
+            if (selectedIds.length === 0) {
+                alert('Please select at least one item.');
+                return;
+            }
+
+            // Remove existing hidden inputs
+            form.querySelectorAll('input[name="' + paramName + '"]').forEach(input => input.remove());
+
+            // Add selected IDs as hidden inputs
+            selectedIds.forEach(id => {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = paramName;
+                hiddenInput.value = id;
+                form.appendChild(hiddenInput);
+            });
+
+            form.submit();
+        }
+    </script>
+}

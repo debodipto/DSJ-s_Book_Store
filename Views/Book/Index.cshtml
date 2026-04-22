@@ -1,0 +1,142 @@
+@model IEnumerable<Book>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<style>
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.table-box {
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.book-img {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.price {
+    color: green;
+    font-weight: bold;
+}
+
+.action-btn a {
+    margin-right: 5px;
+}
+
+</style>
+
+<div class="page-title">
+    ?? Books Management
+</div>
+
+<div class="top-bar">
+
+    <a asp-action="AddBook"
+       asp-controller="Book"
+       class="btn btn-primary">
+        ? Add Book
+    </a>
+
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="table-box">
+
+        <table class="table table-hover align-middle">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>Image</th>
+                    <th>Book</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var book in Model)
+                {
+                    <tr>
+
+                        <td>
+                            <img class="book-img"
+                                 src="@(string.IsNullOrEmpty(book.Image)
+                                 ? "/Images/NoImage.png"
+                                 : "/images/" + book.Image)" />
+                        </td>
+
+                        <td class="fw-bold">
+                            @book.BookName
+                        </td>
+
+                        <td>
+                            @book.AuthorName
+                        </td>
+
+                        <td>
+                            @book.Genre?.GenreName
+                        </td>
+
+                        <td class="price">
+                            ? @book.Price
+                        </td>
+
+                        <td class="action-btn">
+
+                            <a asp-action="UpdateBook"
+                               asp-controller="Book"
+                               asp-route-id="@book.Id"
+                               class="btn btn-sm btn-success">
+                                Edit
+                            </a>
+
+                            <a asp-action="DeleteBook"
+                               asp-controller="Book"
+                               asp-route-id="@book.Id"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Delete this book?')">
+                                Delete
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        ?? No books found
+    </div>
+}
+
+

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background: #f4f6f9;
+        }
+
+        .wrapper {
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background: #111827;
+            color: white;
+            position: fixed;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #cbd5e1;
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover {
+            background: #1f2937;
+            color: #fff;
+            padding-left: 25px;
+        }
+
+        /* Right panel */
+        .main {
+            margin-left: 240px;
+            width: 100%;
+        }
+
+        /* Top navbar */
+        .topbar {
+            background: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .logout-btn {
+            border: none;
+            background: none;
+            color: #ef4444;
+        }
+    </style>
+
+    @RenderSection("Styles", required: false)
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h5 class="text-center mb-4">📊 Admin Panel</h5>
+
+        <a href="/AdminOperations/Dashboard"><i class="bi bi-speedometer2"></i> Admin Dashboard</a>
+        <a href="/Home/Index"><i class="bi bi-house-door"></i> Home</a>
+        <a href="/Analytics/Dashboard"><i class="bi bi-graph-up"></i> Analytics</a>
+        <a href="/BulkOperations/Index"><i class="bi bi-tools"></i> Bulk Ops</a>
+        <a href="/AdminOperations/AllOrders"><i class="bi bi-receipt"></i> Orders</a>
+        <a href="/Stock/Index"><i class="bi bi-box"></i> Stock</a>
+        <a href="/Genre/Index"><i class="bi bi-collection"></i> Genre</a>
+        <a href="/Book/Index"><i class="bi bi-book"></i> Books</a>
+        <a href="/Reports/TopFiveSellingBooks"><i class="bi bi-bar-chart"></i> Reports</a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div>
+                <strong>Welcome @User.Identity?.Name</strong>
+            </div>
+
+            <div>
+                <a href="/Identity/Account/Manage/Index" class="me-3 text-decoration-none">
+                    <i class="bi bi-gear"></i> Account
+                </a>
+
+                <form asp-area="Identity"
+                      asp-page="/Account/Logout"
+                      asp-route-returnUrl="@Url.Action("Index", "Home")"
+                      style="display:inline;">
+                    <button class="logout-btn">
+                        <i class="bi bi-box-arrow-left"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+            <partial name="_Notifications" />
+            @RenderBody()
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+@RenderSection("Scripts", required: false)
+
+</body>
+</html>
+

@@ -1,0 +1,234 @@
+@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "🛡️ Personal Data & Privacy";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .data-container {
+        max-width: 900px;
+        margin: auto;
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+
+    .header-section {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .header-section h3 {
+        color: #2d3748;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .header-section p {
+        color: #718096;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .data-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    .data-card h5 {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .data-card p {
+        color: #4a5568;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .btn-download {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        margin-right: 15px;
+    }
+
+    .btn-download:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(72, 187, 120, 0.3);
+        color: white;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #f56565, #e53e3e);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(245, 101, 101, 0.3);
+        color: white;
+    }
+
+    .warning-box {
+        background: linear-gradient(135deg, #fed7d7, #feb2b2);
+        border: 1px solid #fc8181;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .warning-box h6 {
+        color: #c53030;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .warning-box p {
+        color: #742a2a;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .data-types {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-top: 30px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .data-types h6 {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .data-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .data-item {
+        background: #f7fafc;
+        padding: 12px 16px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        font-size: 0.9rem;
+        color: #4a5568;
+    }
+
+    @@media(max-width:768px){
+        .data-container {
+            padding: 25px;
+            margin: 20px;
+        }
+
+        .header-section h3 {
+            font-size: 1.5rem;
+        }
+
+        .data-list {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-download {
+            width: 100%;
+            margin-bottom: 10px;
+            margin-right: 0;
+        }
+
+        .btn-delete {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="data-container">
+    <div class="header-section">
+        <h3><i class="bi bi-shield-check me-2"></i>@ViewData["Title"]</h3>
+        <p>Manage your personal data and privacy settings</p>
+    </div>
+
+    <div class="data-card">
+        <h5><i class="bi bi-info-circle me-2"></i>About Your Personal Data</h5>
+        <p>
+            Your account contains personal data that you have provided to us. This includes information such as your username,
+            email address, phone number, and any other details you've shared during registration or account updates.
+        </p>
+        <p>
+            We are committed to protecting your privacy and providing you with control over your personal information.
+            You can download a copy of all your data or permanently delete your account and all associated data.
+        </p>
+    </div>
+
+    <div class="data-card">
+        <h5><i class="bi bi-download me-2"></i>Data Management Options</h5>
+
+        <form id="download-data" asp-page="DownloadPersonalData" method="post" class="d-inline">
+            <button class="btn btn-download" type="submit">
+                <i class="bi bi-file-earmark-arrow-down me-2"></i>Download My Data
+            </button>
+        </form>
+
+        <a id="delete" asp-page="DeletePersonalData" class="btn btn-delete">
+            <i class="bi bi-trash me-2"></i>Delete My Account
+        </a>
+
+        <div class="warning-box">
+            <h6><i class="bi bi-exclamation-triangle me-2"></i>Important Warning</h6>
+            <p>
+                Deleting your account will permanently remove all your data, including your profile, order history,
+                wishlist, and any other information associated with your account. This action cannot be undone.
+            </p>
+        </div>
+    </div>
+
+    <div class="data-types">
+        <h6><i class="bi bi-list-check me-2"></i>Data We Collect & Store</h6>
+        <div class="data-list">
+            <div class="data-item">📧 Email Address</div>
+            <div class="data-item">📱 Phone Number</div>
+            <div class="data-item">👤 Username</div>
+            <div class="data-item">📦 Order History</div>
+            <div class="data-item">❤️ Wishlist Items</div>
+            <div class="data-item">🛒 Shopping Cart</div>
+            <div class="data-item">📅 Account Creation Date</div>
+            <div class="data-item">🔐 Password Hash</div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+

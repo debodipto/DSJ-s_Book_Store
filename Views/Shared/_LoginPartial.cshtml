@@ -1,0 +1,43 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@{
+    var isAdminUser = User.IsInRole("Admin")
+        || string.Equals(User.Identity?.Name, "admin@gmail.com", StringComparison.OrdinalIgnoreCase);
+}
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    @if (isAdminUser)
+    {
+        <li class="nav-item me-2">
+            <a class="btn btn-warning fw-bold text-dark" href="/AdminOperations/Dashboard" title="Admin Panel">
+                <i class="bi bi-shield-lock me-1"></i> Admin
+            </a>
+        </li>
+    }
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+            Hello <span id="username">@User.Identity?.Name</span>!
+        </a>
+    </li>
+    <li class="nav-item">
+        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button  type="submit" class="nav-link btn btn-link text-white">Logout</button>
+        </form>
+    </li>
+}
+else
+{
+      
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+}
+</ul>
+
+
+

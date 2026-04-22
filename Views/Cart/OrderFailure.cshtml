@@ -1,0 +1,13 @@
+
+@{
+    ViewData["Title"] = "OrderFailure";
+}
+
+<div class="container py-5">
+    <div class="alert alert-danger">
+        <h1 class="h3 mb-3">Order failed.</h1>
+        <p class="mb-0">@(TempData["OrderMessage"] ?? "We could not complete your order.")</p>
+    </div>
+    <a href="/Cart/GetUserCart" class="btn btn-primary">Back to Cart</a>
+</div>
+

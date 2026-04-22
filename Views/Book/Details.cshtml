@@ -1,0 +1,529 @@
+@model BookDetailsViewModel
+@{
+    ViewData["Title"] = @Model.Book.BookName;
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .book-details-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+    .book-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+    }
+
+    .book-image {
+        width: 200px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        margin-bottom: 20px;
+    }
+
+    .book-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .book-author {
+        font-size: 1.3rem;
+        opacity: 0.9;
+        margin-bottom: 15px;
+    }
+
+    .book-meta {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-bottom: 20px;
+    }
+
+    .meta-item {
+        text-align: center;
+    }
+
+    .meta-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        display: block;
+    }
+
+    .meta-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .book-content {
+        padding: 40px;
+    }
+
+    .book-description {
+        background: #f8fafc;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        border-left: 4px solid #667eea;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+    }
+
+    .btn-cart {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cart:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(72, 187, 120, 0.3);
+        color: white;
+    }
+
+    .btn-wishlist {
+        background: linear-gradient(135deg, #ed64a6, #d53f8c);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-wishlist:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(237, 100, 166, 0.3);
+        color: white;
+    }
+
+    .reviews-section {
+        margin-top: 40px;
+    }
+
+    .reviews-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .rating-summary {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .average-rating {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2d3748;
+    }
+
+    .stars {
+        color: #fbbf24;
+        font-size: 1.2rem;
+    }
+
+    .review-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .review-card:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .reviewer-name {
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .review-date {
+        color: #718096;
+        font-size: 0.9rem;
+    }
+
+    .review-rating {
+        color: #fbbf24;
+        font-size: 1.1rem;
+    }
+
+    .add-review-form {
+        background: #f8fafc;
+        padding: 25px;
+        border-radius: 15px;
+        margin-top: 30px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .rating-input {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .star-rating {
+        display: flex;
+        gap: 5px;
+    }
+
+    .star {
+        font-size: 1.5rem;
+        color: #e2e8f0;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .star:hover,
+    .star.active {
+        color: #fbbf24;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+        padding: 12px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+
+    @@media (max-width: 768px) {
+        .book-header {
+            padding: 25px;
+        }
+
+        .book-title {
+            font-size: 2rem;
+        }
+
+        .book-meta {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .reviews-header {
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="book-details-container">
+    <!-- Book Header -->
+    <div class="book-header">
+        @if (string.IsNullOrEmpty(Model.Book.Image))
+        {
+            <div class="book-image bg-light d-flex align-items-center justify-content-center">
+                <i class="bi bi-book text-muted" style="font-size: 4rem;"></i>
+            </div>
+        }
+        else
+        {
+            <img src="/images/@Model.Book.Image" alt="@Model.Book.BookName" class="book-image" />
+        }
+
+        <h1 class="book-title">@Model.Book.BookName</h1>
+        <p class="book-author">by @Model.Book.AuthorName</p>
+
+        <div class="book-meta">
+            <div class="meta-item">
+                <span class="meta-value">$@Model.Book.Price.ToString("F2")</span>
+                <span class="meta-label">Price</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-value">@Model.Book.GenreName</span>
+                <span class="meta-label">Genre</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-value">@Model.Book.Quantity</span>
+                <span class="meta-label">In Stock</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Content -->
+    <div class="book-content">
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="/Cart/AddItem?bookId=@Model.Book.Id" class="btn btn-cart">
+                <i class="bi bi-cart-plus me-2"></i>Add to Cart
+            </a>
+            <button class="btn btn-wishlist" onclick="toggleWishlist(@Model.Book.Id)">
+                <i class="bi bi-heart me-2"></i>Add to Wishlist
+            </button>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="reviews-section">
+            <div class="reviews-header">
+                <div class="rating-summary">
+                    <div>
+                        <span class="average-rating">@Model.AverageRating.ToString("F1")</span>
+                        <div class="stars">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= Math.Round(Model.AverageRating))
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                else if (i - 0.5 <= Model.AverageRating)
+                                {
+                                    <i class="bi bi-star-half"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div>
+                        <strong>@Model.TotalReviews</strong> review@(Model.TotalReviews != 1 ? "s" : "")
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing Reviews -->
+            @if (Model.Reviews.Any())
+            {
+                @foreach (var review in Model.Reviews)
+                {
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div>
+                                <span class="reviewer-name">@review.User?.UserName</span>
+                                <span class="review-date">@review.CreatedDate.ToString("MMM dd, yyyy")</span>
+                            </div>
+                            <div class="review-rating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="bi bi-star@(i <= review.Rating ? "-fill" : "")"></i>
+                                }
+                            </div>
+                        </div>
+                        <p class="mb-0">@review.Comment</p>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center py-4">
+                    <i class="bi bi-chat-square-text display-1 text-muted mb-3"></i>
+                    <h5 class="text-muted">No reviews yet</h5>
+                    <p class="text-muted">Be the first to review this book!</p>
+                </div>
+            }
+
+            <!-- Add Review Form -->
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="add-review-form">
+                    <h5><i class="bi bi-pencil-square me-2"></i>Write a Review</h5>
+
+                    <form method="post" asp-controller="Review" asp-action="AddReview">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="bookId" value="@Model.Book.Id" />
+
+                        <div class="form-group">
+                            <label class="form-label">Rating</label>
+                            <div class="star-rating" id="rating-stars">
+                                <i class="bi bi-star star" data-rating="1"></i>
+                                <i class="bi bi-star star" data-rating="2"></i>
+                                <i class="bi bi-star star" data-rating="3"></i>
+                                <i class="bi bi-star star" data-rating="4"></i>
+                                <i class="bi bi-star star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" name="rating" id="rating-input" value="0" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Your Review</label>
+                            <textarea name="comment" class="form-control" rows="4" placeholder="Share your thoughts about this book..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-submit">
+                            <i class="bi bi-send me-2"></i>Submit Review
+                        </button>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4">
+                    <i class="bi bi-person-circle display-1 text-muted mb-3"></i>
+                    <h5 class="text-muted">Login to Write a Review</h5>
+                    <p class="text-muted">You need to be logged in to share your thoughts about this book.</p>
+                    <a href="/Identity/Account/Login" class="btn btn-primary">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Star rating functionality
+        const stars = document.querySelectorAll('.star');
+        const ratingInput = document.getElementById('rating-input');
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const rating = parseInt(star.getAttribute('data-rating'));
+                ratingInput.value = rating;
+
+                // Update star display
+                stars.forEach((s, index) => {
+                    if (index < rating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Wishlist functionality
+        async function toggleWishlist(bookId) {
+            try {
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                const response = await fetch(`/Wishlist/IsInWishlist?bookId=${bookId}`);
+                const isInWishlist = await response.json();
+
+                if (isInWishlist) {
+                    // Remove from wishlist
+                    const removeResponse = await fetch('/Wishlist/RemoveFromWishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': token
+                        },
+                        body: `bookId=${bookId}&__RequestVerificationToken=${token}`
+                    });
+
+                    if (removeResponse.ok) {
+                        updateWishlistButton(bookId, false);
+                    }
+                } else {
+                    // Add to wishlist
+                    const addResponse = await fetch('/Wishlist/AddToWishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': token
+                        },
+                        body: `bookId=${bookId}&__RequestVerificationToken=${token}`
+                    });
+
+                    if (addResponse.ok) {
+                        updateWishlistButton(bookId, true);
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling wishlist:', error);
+            }
+        }
+
+        function updateWishlistButton(bookId, isInWishlist) {
+            const button = document.querySelector('.btn-wishlist');
+            if (button) {
+                button.innerHTML = isInWishlist ?
+                    '<i class="bi bi-heart-fill me-2"></i>Remove from Wishlist' :
+                    '<i class="bi bi-heart me-2"></i>Add to Wishlist';
+                button.className = isInWishlist ?
+                    'btn btn-danger' :
+                    'btn btn-wishlist';
+            }
+        }
+
+        // Initialize wishlist button on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            const bookId = @Model.Book.Id;
+            try {
+                const response = await fetch(`/Wishlist/IsInWishlist?bookId=${bookId}`);
+                const isInWishlist = await response.json();
+                updateWishlistButton(bookId, isInWishlist);
+            } catch (error) {
+                console.error('Error checking wishlist status:', error);
+            }
+        });
+    </script>
+}

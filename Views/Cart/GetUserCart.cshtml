@@ -1,0 +1,200 @@
+@model ShoppingCart
+@{
+    ViewData["Title"] = "🛒 My Shopping Cart";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0 text-primary">
+                        <i class="bi bi-cart-fill me-2"></i>My Shopping Cart
+                    </h1>
+                    <p class="text-muted mb-0">Review your items and proceed to checkout</p>
+                </div>
+                <a href="/" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left me-1"></i>Continue Shopping
+                </a>
+            </div>
+
+            @if (Model != null && Model.CartDetails != null && Model.CartDetails.Count > 0)
+            {
+                <!-- Cart Items -->
+                <div class="row">
+                    <div class="col-12 col-lg-8">
+                        @foreach (var item in Model.CartDetails)
+                        {
+                            var book = item.Book;
+                            var stockQuantity = book?.Stock?.Quantity;
+                            var canIncreaseQuantity = !stockQuantity.HasValue || item.Quantity < stockQuantity.Value;
+                            var genreName = book?.Genre?.GenreName ?? "Uncategorized";
+                            var unitPrice = book?.Price ?? item.UnitPrice;
+                            var bookName = book?.BookName ?? "Unknown Book";
+                            var authorName = book?.AuthorName ?? "Unknown Author";
+                            var bookImage = book?.Image;
+
+                            <div class="card mb-3 shadow-sm border-0" style="border-radius: 15px;">
+                                <div class="card-body p-4">
+                                    <div class="row align-items-center">
+                                        <!-- Book Image -->
+                                        <div class="col-12 col-md-3 text-center mb-3 mb-md-0">
+                                            @if (string.IsNullOrEmpty(bookImage))
+                                            {
+                                                <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 120px; height: 160px; margin: 0 auto;">
+                                                    <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <img src="/images/@bookImage" class="img-fluid rounded shadow-sm"
+                                                     style="width: 120px; height: 160px; object-fit: cover;" alt="@bookName" />
+                                            }
+                                        </div>
+
+                                        <!-- Book Details -->
+                                        <div class="col-12 col-md-5">
+                                            <h5 class="card-title mb-1">@bookName</h5>
+                                            <p class="text-muted mb-1">By @authorName</p>
+                                            <span class="badge bg-primary-subtle text-primary">@genreName</span>
+                                        </div>
+
+                                        <!-- Price & Quantity -->
+                                        <div class="col-12 col-md-4">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <div>
+                                                    <span class="text-muted">Price:</span>
+                                                    <span class="fw-bold text-primary fs-5">$@unitPrice.ToString("F2")</span>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="text-muted">Total:</span>
+                                                    <span class="fw-bold text-success fs-5">$@((unitPrice * item.Quantity).ToString("F2"))</span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Quantity Controls -->
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="input-group" style="width: 140px;">
+                                                    <span class="input-group-text bg-light">Qty:</span>
+                                                    <span class="form-control text-center bg-light">@item.Quantity</span>
+                                                </div>
+
+                                                <div class="btn-group" role="group">
+                                                    @if (canIncreaseQuantity)
+                                                    {
+                                                        <a class="btn btn-outline-success btn-sm" href="/Cart/AddItem?bookId=@item.BookId"
+                                                           title="Increase quantity">
+                                                            <i class="bi bi-plus"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-outline-warning btn-sm" disabled title="Out of stock">
+                                                            <i class="bi bi-exclamation-triangle"></i>
+                                                        </button>
+                                                    }
+
+                                                    <a class="btn btn-outline-danger btn-sm" href="/cart/removeitem?bookid=@item.BookId"
+                                                       title="Decrease quantity">
+                                                        <i class="bi bi-dash"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            @if (stockQuantity.HasValue && item.Quantity >= stockQuantity.Value)
+                                            {
+                                                <small class="text-danger mt-1">
+                                                    <i class="bi bi-exclamation-circle me-1"></i>Maximum available stock reached
+                                                </small>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="col-12 col-lg-4">
+                        <div class="card shadow border-0" style="border-radius: 15px; position: sticky; top: 20px;">
+                            <div class="card-header bg-primary text-white" style="border-radius: 15px 15px 0 0 !important;">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-receipt me-2"></i>Order Summary
+                                </h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span>Items (@Model.CartDetails.Count)</span>
+                                    <span>$@Model.CartDetails.Sum(x => (x.Book?.Price ?? x.UnitPrice) * x.Quantity).ToString("F2")</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span>Shipping</span>
+                                    <span class="text-success">FREE</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mb-4">
+                                    <strong class="fs-5">Total</strong>
+                                    <strong class="fs-5 text-primary">$@Model.CartDetails.Sum(x => (x.Book?.Price ?? x.UnitPrice) * x.Quantity).ToString("F2")</strong>
+                                </div>
+
+                                <a href="/Cart/Checkout" class="btn btn-primary w-100 mb-3" style="border-radius: 10px;">
+                                    <i class="bi bi-credit-card me-2"></i>Proceed to Checkout
+                                </a>
+
+                                <div class="text-center">
+                                    <small class="text-muted">
+                                        <i class="bi bi-shield-check me-1"></i>Secure checkout with SSL encryption
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <!-- Empty Cart -->
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-cart-x display-1 text-muted"></i>
+                    </div>
+                    <h3 class="text-muted mb-3">Your cart is empty</h3>
+                    <p class="text-muted mb-4">Looks like you haven't added any books to your cart yet.</p>
+                    <a href="/" class="btn btn-primary btn-lg">
+                        <i class="bi bi-shop me-2"></i>Start Shopping
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+
+    .btn-outline-success:hover, .btn-outline-danger:hover {
+        color: white !important;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+    }
+
+    @@media (max-width: 768px) {
+        .card-body {
+            padding: 1.5rem !important;
+        }
+
+        .h3 {
+            font-size: 1.5rem !important;
+        }
+    }
+</style>

@@ -1,0 +1,154 @@
+@{
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-gradient-info text-white text-center py-4">
+                    <i class="bi bi-newspaper fs-1 mb-2"></i>
+                    <h3 class="card-title mb-0">Stay Updated</h3>
+                    <p class="mb-0">Subscribe to our newsletter for the latest book releases and exclusive offers</p>
+                </div>
+                <div class="card-body p-4">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle"></i> @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5><i class="bi bi-gift"></i> What You'll Get:</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Weekly book recommendations</li>
+                                <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Exclusive discount codes</li>
+                                <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Author interviews and insights</li>
+                                <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Reading tips and guides</li>
+                                <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Early access to new releases</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="bi bi-tags"></i> Choose Your Interests:</h5>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="fiction" checked>
+                                    <label class="form-check-label" for="fiction">
+                                        Fiction & Literature
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="nonfiction" checked>
+                                    <label class="form-check-label" for="nonfiction">
+                                        Non-Fiction
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="mystery">
+                                    <label class="form-check-label" for="mystery">
+                                        Mystery & Thriller
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="romance">
+                                    <label class="form-check-label" for="romance">
+                                        Romance
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="scifi">
+                                    <label class="form-check-label" for="scifi">
+                                        Science Fiction
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Subscribe" method="post" class="needs-validation" novalidate>
+                        <div class="input-group input-group-lg mb-3">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input type="email" name="email" class="form-control" placeholder="Enter your email address" required />
+                            <button type="submit" class="btn btn-info">
+                                <i class="bi bi-send"></i> Subscribe Now
+                            </button>
+                            <div class="invalid-feedback">
+                                Please provide a valid email address.
+                            </div>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="privacy" required>
+                            <label class="form-check-label" for="privacy">
+                                I agree to receive newsletters and accept the <a href="#" class="text-decoration-none">Privacy Policy</a>
+                            </label>
+                            <div class="invalid-feedback">
+                                You must agree to the privacy policy.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 rounded-3 mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-envelope-paper"></i> Recent Newsletters</h5>
+                </div>
+                <div class="card-body">
+                    <div class="newsletter-item mb-3 pb-3 border-bottom">
+                        <h6>April 2026 - Spring Reading Picks</h6>
+                        <p class="text-muted small">Discover the best books for spring reading</p>
+                        <small class="text-muted">April 15, 2026</small>
+                    </div>
+                    <div class="newsletter-item mb-3 pb-3 border-bottom">
+                        <h6>March 2026 - Author Spotlight</h6>
+                        <p class="text-muted small">Interview with bestselling author Sarah Johnson</p>
+                        <small class="text-muted">March 28, 2026</small>
+                    </div>
+                    <div class="newsletter-item">
+                        <h6>February 2026 - Valentine's Special</h6>
+                        <p class="text-muted small">Romantic reads for the season</p>
+                        <small class="text-muted">February 14, 2026</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-shield-check"></i> Privacy & Security</h5>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted mb-2">
+                        <i class="bi bi-lock"></i> Your email is secure and will never be shared
+                    </p>
+                    <p class="small text-muted mb-2">
+                        <i class="bi bi-x-circle"></i> Easy unsubscribe anytime
+                    </p>
+                    <p class="small text-muted mb-0">
+                        <i class="bi bi-envelope-slash"></i> No spam, only quality content
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    }
+    .input-group-text {
+        background: #e9ecef;
+        border-color: #ced4da;
+    }
+    .newsletter-item:hover {
+        background: #f8f9fa;
+        border-radius: 5px;
+        padding: 10px;
+        margin: -10px;
+        transition: all 0.3s ease;
+    }
+</style>

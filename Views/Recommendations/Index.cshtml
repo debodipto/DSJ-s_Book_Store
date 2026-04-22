@@ -1,0 +1,88 @@
+@model HomeViewModel
+@{
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-gradient-success text-white text-center py-4">
+            <i class="bi bi-star-fill fs-1 mb-2"></i>
+            <h3 class="mb-0">Book Recommendations</h3>
+            <p class="mb-0">Discover amazing books curated just for you</p>
+        </div>
+        <div class="card-body p-4">
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center border-success">
+                        <div class="card-body">
+                            <i class="bi bi-trophy text-warning fs-2 mb-2"></i>
+                            <h5 class="card-title">Bestsellers</h5>
+                            <p class="card-text">Most popular books this month</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center border-info">
+                        <div class="card-body">
+                            <i class="bi bi-lightning text-info fs-2 mb-2"></i>
+                            <h5 class="card-title">Trending Now</h5>
+                            <p class="card-text">Books everyone is talking about</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center border-primary">
+                        <div class="card-body">
+                            <i class="bi bi-heart text-danger fs-2 mb-2"></i>
+                            <h5 class="card-title">Editor's Picks</h5>
+                            <p class="card-text">Handpicked by our experts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4 class="mb-4"><i class="bi bi-book"></i> Recommended for You</h4>
+            <div class="row">
+                @foreach (var book in Model.Books)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm hover-card">
+                            <div class="position-relative">
+                                <img src="~/images/@book.Image" class="card-img-top" alt="@book.BookName" style="height: 200px; object-fit: cover;" />
+                                <div class="badge bg-success position-absolute top-0 end-0 m-2">
+                                    <i class="bi bi-star-fill"></i> 4.5
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@book.BookName</h5>
+                                <p class="card-text text-muted">by @book.AuthorName</p>
+                                <p class="card-text fw-bold text-success">$@book.Price</p>
+                                <div class="d-flex gap-2">
+                                    <a href="/Book/Details/@book.Id" class="btn btn-outline-success flex-fill">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                    <button class="btn btn-success">
+                                        <i class="bi bi-cart-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+    }
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+</style>

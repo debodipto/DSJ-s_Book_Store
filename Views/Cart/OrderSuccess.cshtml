@@ -1,0 +1,57 @@
+@model Order?
+
+@{
+    ViewData["Title"] = "Order Success";
+    Layout = "_Layout";
+}
+
+<style>
+    .success-box {
+        text-align: center;
+        padding: 40px;
+        background: #eaffea;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .order-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    body.dark-mode .order-card {
+        background: #1e293b;
+        color: white;
+    }
+</style>
+
+<div class="success-box">
+    <h2>Order Placed Successfully!</h2>
+    <p>@(TempData["OrderMessage"] ?? "Thank you for your purchase.")</p>
+
+    <a href="/Home/Index" class="btn btn-primary">
+        Continue Shopping
+    </a>
+</div>
+
+@if (Model != null)
+{
+    <div class="order-card">
+        <h5>Order ID: #@Model.Id</h5>
+        <p>Status: <b>@(Model.OrderStatus?.StatusName ?? "Pending")</b></p>
+        <p>Total Items: @Model.OrderDetails.Count</p>
+
+        <a href="/Cart/OrderDetails/@Model.Id" class="btn btn-success btn-sm">
+            View Details
+        </a>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        Your order was placed, but the order details could not be loaded.
+    </div>
+}

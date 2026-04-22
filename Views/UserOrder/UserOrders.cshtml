@@ -1,0 +1,188 @@
+@model IEnumerable<Order>
+@{
+    ViewData["Title"] = "📦 My Orders";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0 text-primary">
+                        <i class="bi bi-receipt me-2"></i>My Orders
+                    </h1>
+                    <p class="text-muted mb-0">Track your order history and status</p>
+                </div>
+                <a href="/Identity/Account/Manage" class="btn btn-outline-primary">
+                    <i class="bi bi-person-circle me-1"></i>Account Settings
+                </a>
+            </div>
+
+            @if (Model != null && Model.Count() > 0)
+            {
+                @foreach (var order in Model)
+                {
+                    <div class="card mb-4 shadow-sm border-0" style="border-radius: 15px;">
+                        <div class="card-header bg-light border-0" style="border-radius: 15px 15px 0 0 !important;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">
+                                        <i class="bi bi-calendar-event me-2"></i>
+                                        Order #@order.Id
+                                    </h5>
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock me-1"></i>
+                                        @order.CreateDate.ToString("dddd, MMMM dd, yyyy 'at' h:mm tt")
+                                    </small>
+                                </div>
+                                <div class="text-end">
+                                    @if (order.OrderStatus.StatusName.ToLower().Contains("pending"))
+                                    {
+                                        <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+                                            <i class="bi bi-clock-history me-1"></i>@order.OrderStatus.StatusName
+                                        </span>
+                                    }
+                                    else if (order.OrderStatus.StatusName.ToLower().Contains("completed") || order.OrderStatus.StatusName.ToLower().Contains("delivered"))
+                                    {
+                                        <span class="badge bg-success fs-6 px-3 py-2">
+                                            <i class="bi bi-check-circle me-1"></i>@order.OrderStatus.StatusName
+                                        </span>
+                                    }
+                                    else if (order.OrderStatus.StatusName.ToLower().Contains("cancelled"))
+                                    {
+                                        <span class="badge bg-danger fs-6 px-3 py-2">
+                                            <i class="bi bi-x-circle me-1"></i>@order.OrderStatus.StatusName
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info fs-6 px-3 py-2">
+                                            <i class="bi bi-truck me-1"></i>@order.OrderStatus.StatusName
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-4">
+                            @if (order.OrderDetails != null && order.OrderDetails.Count > 0)
+                            {
+                                <!-- Order Items -->
+                                <div class="row">
+                                    @foreach (var item in order.OrderDetails)
+                                    {
+                                        <div class="col-12 mb-3">
+                                            <div class="d-flex align-items-center p-3 bg-light rounded" style="border-radius: 10px;">
+                                                <!-- Book Image -->
+                                                <div class="me-3">
+                                                    @if (string.IsNullOrEmpty(item.Book.Image))
+                                                    {
+                                                        <div class="bg-white rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 80px;">
+                                                            <i class="bi bi-book text-muted"></i>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="/images/@item.Book.Image" class="rounded shadow-sm"
+                                                             style="width: 60px; height: 80px; object-fit: cover;" alt="@item.Book.BookName" />
+                                                    }
+                                                </div>
+
+                                                <!-- Book Details -->
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1">@item.Book.BookName</h6>
+                                                    <p class="text-muted mb-1 small">By @item.Book.AuthorName</p>
+                                                    <span class="badge bg-primary-subtle text-primary small">@item.Book.Genre.GenreName</span>
+                                                </div>
+
+                                                <!-- Price & Quantity -->
+                                                <div class="text-end">
+                                                    <div class="mb-1">
+                                                        <span class="text-muted small">Qty: @item.Quantity</span>
+                                                    </div>
+                                                    <div class="mb-1">
+                                                        <span class="text-muted small">$@item.Book.Price.ToString("F2") each</span>
+                                                    </div>
+                                                    <div>
+                                                        <strong class="text-primary">$@(item.Book.Price * item.Quantity).ToString("F2")</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Order Total -->
+                                <hr class="my-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-0">Order Total</h5>
+                                        <small class="text-muted">@order.OrderDetails.Count item(s)</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h4 class="text-primary mb-0">$@(order.OrderDetails.Select(item => item.Book.Price * item.Quantity).Sum()).ToString("F2")</h4>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <!-- No Orders -->
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-receipt-x display-1 text-muted"></i>
+                    </div>
+                    <h3 class="text-muted mb-3">No orders yet</h3>
+                    <p class="text-muted mb-4">You haven't placed any orders yet. Start shopping to see your orders here!</p>
+                    <a href="/" class="btn btn-primary btn-lg">
+                        <i class="bi bi-shop me-2"></i>Start Shopping
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+    }
+
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+
+    @@media (max-width: 768px) {
+        .card-body {
+            padding: 1.5rem !important;
+        }
+
+        .h3 {
+            font-size: 1.5rem !important;
+        }
+
+        .d-flex.align-items-center.p-3 {
+            padding: 1rem !important;
+        }
+    }
+</style>
+
+
+
+
+
+
+
