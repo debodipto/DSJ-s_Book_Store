@@ -127,10 +127,7 @@ public class DbSeeder
            ");
             }
 
-            if (!context.OrderStatuses.Any())
-            {
-                await SeedOrderStatusAsync(context);
-            }
+            await SeedOrderStatusAsync(context);
         }
         catch (Exception ex)
         {
@@ -158,17 +155,34 @@ public class DbSeeder
 
     private static async Task SeedOrderStatusAsync(ApplicationDbContext context)
     {
-        var OrderStatuses = new[]
+        var orderStatuses = new[]
         {
             new OrderStatus { StatusId = 1, StatusName = "Pending" },
-            new OrderStatus { StatusId = 2, StatusName = "Shipped" },
-            new OrderStatus { StatusId = 3, StatusName = "Delivered" },
-            new OrderStatus { StatusId = 4, StatusName = "Cancelled" },
-            new OrderStatus { StatusId = 5, StatusName = "Returned" },
-            new OrderStatus { StatusId = 6, StatusName = "Refund" }
+            new OrderStatus { StatusId = 2, StatusName = "Confirmed" },
+            new OrderStatus { StatusId = 3, StatusName = "Processing" },
+            new OrderStatus { StatusId = 4, StatusName = "Shipped" },
+            new OrderStatus { StatusId = 5, StatusName = "Out for Delivery" },
+            new OrderStatus { StatusId = 6, StatusName = "Delivered" },
+            new OrderStatus { StatusId = 7, StatusName = "Cancelled" },
+            new OrderStatus { StatusId = 8, StatusName = "Returned" },
+            new OrderStatus { StatusId = 9, StatusName = "Refund" }
         };
 
-        await context.OrderStatuses.AddRangeAsync(OrderStatuses);
+        foreach (var status in orderStatuses)
+        {
+            var existingStatus = await context.OrderStatuses
+                .FirstOrDefaultAsync(x => x.StatusName == status.StatusName || x.StatusId == status.StatusId);
+
+            if (existingStatus == null)
+            {
+                await context.OrderStatuses.AddAsync(status);
+                continue;
+            }
+
+            existingStatus.StatusId = status.StatusId;
+            existingStatus.StatusName = status.StatusName;
+        }
+
         await context.SaveChangesAsync();
     }
 

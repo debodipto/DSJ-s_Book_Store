@@ -9,6 +9,18 @@ namespace DSJsBookStore.Repositories
         private readonly ApplicationDbContext _db;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<IdentityUser> _userManager;
+        private static readonly (int StatusId, string StatusName)[] DefaultOrderStatuses =
+        [
+            (1, "Pending"),
+            (2, "Confirmed"),
+            (3, "Processing"),
+            (4, "Shipped"),
+            (5, "Out for Delivery"),
+            (6, "Delivered"),
+            (7, "Cancelled"),
+            (8, "Returned"),
+            (9, "Refund")
+        ];
 
         public UserOrderRepository(
             ApplicationDbContext db,
@@ -22,10 +34,16 @@ namespace DSJsBookStore.Repositories
 
         public async Task ChangeOrderStatus(UpdateOrderStatusModel data)
         {
+            await EnsureOrderStatusesAsync();
+
             var order = await _db.Orders.FindAsync(data.OrderId);
 
             if (order == null)
                 throw new InvalidOperationException($"Order with id {data.OrderId} not found");
+
+            var statusExists = await _db.OrderStatuses.AnyAsync(x => x.Id == data.OrderStatusId);
+            if (!statusExists)
+                throw new InvalidOperationException($"Order status with id {data.OrderStatusId} not found");
 
             order.OrderStatusId = data.OrderStatusId;
             await _db.SaveChangesAsync();
@@ -42,7 +60,46 @@ namespace DSJsBookStore.Repositories
 
         public async Task<IEnumerable<OrderStatus>> GetOrderStatuses()
         {
-            return await _db.OrderStatuses.ToListAsync();
+            await EnsureOrderStatusesAsync();
+
+            return await _db.OrderStatuses
+                .OrderBy(x => x.StatusId)
+                .ToListAsync();
+        }
+
+        private async Task EnsureOrderStatusesAsync()
+        {
+            var existingStatuses = await _db.OrderStatuses.ToListAsync();
+            var hasChanges = false;
+
+            foreach (var (statusId, statusName) in DefaultOrderStatuses)
+            {
+                var existingStatus = existingStatuses
+                    .FirstOrDefault(x => x.StatusId == statusId || x.StatusName == statusName);
+
+                if (existingStatus == null)
+                {
+                    _db.OrderStatuses.Add(new OrderStatus
+                    {
+                        StatusId = statusId,
+                        StatusName = statusName
+                    });
+                    hasChanges = true;
+                    continue;
+                }
+
+                if (existingStatus.StatusId != statusId || existingStatus.StatusName != statusName)
+                {
+                    existingStatus.StatusId = statusId;
+                    existingStatus.StatusName = statusName;
+                    hasChanges = true;
+                }
+            }
+
+            if (hasChanges)
+            {
+                await _db.SaveChangesAsync();
+            }
         }
 
         public async Task TogglePaymentStatus(int orderId)

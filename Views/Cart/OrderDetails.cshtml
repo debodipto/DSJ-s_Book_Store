@@ -1,0 +1,95 @@
+@model Order
+
+@{
+    ViewData["Title"] = "Order Details";
+    Layout = "_Layout";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Order Details</h2>
+            <p class="text-muted mb-0">Order #@Model.Id</p>
+        </div>
+        <a href="/Cart/OrderSuccess?orderId=@Model.Id" class="btn btn-outline-primary">Back</a>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <strong>Status</strong>
+                    <div>@(Model.OrderStatus?.StatusName ?? "Pending")</div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Payment</strong>
+                    <div>@Model.PaymentMethod - @(Model.IsPaid ? "Paid" : "Unpaid")</div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Date</strong>
+                    <div>@Model.CreateDate.ToString("dd MMM yyyy hh:mm tt")</div>
+                </div>
+                <div class="col-md-6">
+                    <strong>Customer</strong>
+                    <div>@Model.Name</div>
+                    <div class="text-muted">@Model.Email</div>
+                    <div class="text-muted">@Model.MobileNumber</div>
+                </div>
+                <div class="col-md-6">
+                    <strong>Address</strong>
+                    <div>@Model.Address</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Ordered Items</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Book</th>
+                                <th>Genre</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderDetails)
+                            {
+                                var bookName = item.Book?.BookName ?? "Unknown Book";
+                                var genreName = item.Book?.Genre?.GenreName ?? "Uncategorized";
+                                var lineTotal = item.UnitPrice * item.Quantity;
+
+                                <tr>
+                                    <td>@bookName</td>
+                                    <td>@genreName</td>
+                                    <td>$@item.UnitPrice.ToString("F2")</td>
+                                    <td>@item.Quantity</td>
+                                    <td>$@lineTotal.ToString("F2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="4" class="text-end">Grand Total</th>
+                                <th>$@Model.OrderDetails.Sum(x => x.UnitPrice * x.Quantity).ToString("F2")</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="p-4 text-muted">No order items found.</div>
+            }
+        </div>
+    </div>
+</div>
