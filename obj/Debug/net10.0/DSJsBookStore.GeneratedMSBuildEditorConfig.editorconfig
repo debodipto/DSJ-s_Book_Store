@@ -246,10 +246,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxHZXRVc2VyQ2FydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects/DSJsBookStore/Views/Cart/OrderDetails.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxPcmRlckRldGFpbHMuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
 [D:/Projects/DSJsBookStore/Views/Cart/OrderFailure.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxPcmRlckZhaWx1cmUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

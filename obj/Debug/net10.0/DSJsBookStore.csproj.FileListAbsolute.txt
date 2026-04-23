@@ -328,4 +328,3 @@ D:\Projects\DSJsBookStore\obj\Debug\net10.0\DSJsBookStore.genruntimeconfig.cache
 D:\Projects\DSJsBookStore\obj\Debug\net10.0\ref\DSJsBookStore.dll
 D:\Projects\DSJsBookStore\bin\Debug\net10.0\CheckAdmin\obj\CheckAdmin.csproj.nuget.dgspec.json
 D:\Projects\DSJsBookStore\bin\Debug\net10.0\CheckAdmin\obj\project.assets.json
-D:\Projects\DSJsBookStore\obj\Debug\net10.0\DSJsBookStore.sourcelink.json

@@ -266,11 +266,8 @@ namespace DSJsBookStore.Repositories
         public async Task<Order?> GetOrderById(int id)
         {
             return await _db.Orders
-                .Include(o => o.OrderStatus)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Book)
-                        .ThenInclude(b => b!.Genre)
-                .Include(o => o.User)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
 

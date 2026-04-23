@@ -211,8 +211,8 @@
                         @foreach (var book in Model.TopSellingBooks)
                         {
                             <tr>
-                                <td>@book.BookName</td>
-                                <td>@book.AuthorName</td>
+                                <td>@book.Book.BookName</td>
+                                <td>@book.Book.AuthorName</td>
                                 <td>@book.TotalSold</td>
                                 <td>$@book.TotalRevenue.ToString("N2")</td>
                             </tr>
@@ -237,7 +237,7 @@
                         @foreach (var stock in Model.LowStockBooks)
                         {
                             <tr>
-                                <td>@(stock.Book?.BookName ?? "Unknown Book")</td>
+                                <td>@stock.Book.BookName</td>
                                 <td>@stock.Quantity</td>
                                 <td>
                                     <span class="badge-low-stock">
@@ -277,15 +277,14 @@
                 <tbody>
                     @foreach (var order in Model.RecentOrders)
                     {
-                        var orderStatus = order.OrderStatus?.StatusName ?? "Unknown";
                         <tr>
                             <td>#@order.Id</td>
                             <td>@order.User?.UserName</td>
                             <td>@order.OrderDetails.Sum(od => od.Quantity)</td>
-                            <td>$@order.OrderDetails.Sum(od => od.UnitPrice * od.Quantity).ToString("N2")</td>
+                            <td>$@order.OrderDetails.Sum(od => od.Book.Price * od.Quantity).ToString("N2")</td>
                             <td>
-                                <span class="status-badge status-@orderStatus.ToLowerInvariant()">
-                                    @orderStatus
+                                <span class="status-badge status-@order.OrderStatus.ToString().ToLower()">
+                                    @order.OrderStatus.ToString()
                                 </span>
                             </td>
                             <td>@order.CreateDate.ToString("MMM dd, yyyy")</td>
